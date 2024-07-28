@@ -2,7 +2,6 @@ package com.coderandom.mine_rp.managers;
 
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
 import com.coderandom.mine_rp.modules.jobs.data.PlayerJobsData;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -36,16 +36,10 @@ public final class MineRP extends JavaPlugin {
     public static EconomyManager ECONOMY_MANAGER;
     public static Economy ECONOMY;
 
-    /**
-     * Constructor to initialize the main plugin instance.
-     */
-    public MineRP() {
-        MINE_RP = this;
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
+        MINE_RP = this;
         saveDefaultConfig();
         CONFIG = getConfig();
 
