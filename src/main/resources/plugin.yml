@@ -1,0 +1,9 @@
+name: MineRP
+version: '1.0-SNAPSHOT'
+main: com.coderandom.mine_rp.MineRP
+api-version: '1.21'
+prefix: MineRP
+load: STARTUP
+authors: [ D4RKJOK3R ]
+description: A roleplay system for minecraft servers
+depend: [Vault]
