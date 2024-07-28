@@ -1,6 +1,6 @@
 # Config for MineRP
-default_job: "citizen"
-salary_frequency: 20
+default_job: "citizen" # The default job assigned when a player joins the server.
+salary_frequency: 20 # How often in minutes are job salaries paid.
 
 # Enable or Disable MySQL support and your database settings
 MySQL:
