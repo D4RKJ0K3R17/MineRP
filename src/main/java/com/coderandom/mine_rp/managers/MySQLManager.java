@@ -6,7 +6,8 @@ import java.sql.*;
 import java.util.logging.Level;
 
 public class MySQLManager {
-    final Plugin plugin;
+    private static volatile MySQLManager instance;
+    private static Plugin plugin;
     private final String host;
     private final String port;
     private final String database;
@@ -14,13 +15,27 @@ public class MySQLManager {
     private final String password;
     protected Connection connection;
 
-    public MySQLManager(Plugin plugin, String host, String port, String database, String username, String password) {
-        this.plugin = plugin;
-        this.host = host;
-        this.port = port;
-        this.database = database;
-        this.username = username;
-        this.password = password;
+    private MySQLManager() {
+        this.host = plugin.getConfig().getString("MySQL.host");
+        this.port = plugin.getConfig().getString("MySQL.port");
+        this.database = plugin.getConfig().getString("MySQL.database");
+        this.username = plugin.getConfig().getString("MySQL.username");
+        this.password = plugin.getConfig().getString("MySQL.password");
+    }
+
+    public static void initialize(Plugin pluginInstance) {
+        plugin = pluginInstance;
+    }
+
+    public static synchronized MySQLManager getInstance() {
+        if (instance == null) {
+            synchronized (MySQLManager.class) {
+                if (instance == null) {
+                    instance = new MySQLManager();
+                }
+            }
+        }
+        return instance;
     }
 
     public boolean connect() {
@@ -30,6 +45,7 @@ public class MySQLManager {
             }
             String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false";
             connection = DriverManager.getConnection(url, username, password);
+            plugin.getLogger().log(Level.INFO, "Connected to MySQL database.");
             return true;
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not connect to MySQL database!", e);
@@ -89,7 +105,6 @@ public class MySQLManager {
         }
     }
 
-    // New createTables method for creating necessary tables
     public void createTables(String tableCreationQuery) {
         try {
             executeUpdate(tableCreationQuery);

@@ -3,64 +3,43 @@
     "name": "Citizen",
     "category": "civilian",
     "salary": 50.00,
-    "permissions": [
-      "mine_rp.job.citizen"
-    ],
-    "commands": []
+    "permissions": []
   },
   "thug": {
     "name": "Thug",
     "category": "criminal",
     "salary": 50.00,
-    "permissions": [
-      "mine_rp.job.thug"
-    ],
-    "commands": []
+    "permissions": []
   },
   "farmer": {
     "name": "Farmer",
     "category": "civilian",
     "salary": 60.00,
-    "permissions": [
-      "mine_rp.job.farmer"
-    ],
-    "commands": []
+    "permissions": []
   },
   "blacksmith": {
     "name": "Blacksmith",
     "category": "civilian",
     "salary": 70.00,
-    "permissions": [
-      "mine_rp.job.blacksmith"
-    ],
-    "commands": []
+    "permissions": []
   },
   "guard": {
     "name": "Guard",
     "category": "military",
     "salary": 80.00,
-    "permissions": [
-      "mine_rp.job.guard"
-    ],
-    "commands": []
+    "permissions": []
   },
   "merchant": {
     "name": "Merchant",
     "category": "civilian",
     "salary": 90.00,
-    "permissions": [
-      "mine_rp.job.merchant"
-    ],
-    "commands": []
+    "permissions": []
   },
   "mayor": {
     "name": "Mayor",
     "category": "government",
     "salary": 100.00,
-    "permissions": [
-      "mine_rp.job.mayor"
-    ],
-    "commands": []
+    "permissions": []
   }
 }
 

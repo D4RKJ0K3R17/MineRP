@@ -1,9 +1,12 @@
 package com.coderandom.mine_rp.modules.jobs.data;
 
+import com.coderandom.mine_rp.modules.jobs.events.JobChangeEvent;
+import com.coderandom.mine_rp.modules.jobs.managers.JobsManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.UUID;
-
-import static com.coderandom.mine_rp.MineRP.JOBS_MANAGER;
 
 public class PlayerJobsData {
     private final HashMap<UUID, String> playerJobs;
@@ -12,20 +15,31 @@ public class PlayerJobsData {
         this.playerJobs = new HashMap<>();
     }
 
-    public void setPlayerJob(UUID playerId, String jobName) {
-        playerJobs.put(playerId, jobName);
+    public void setPlayerJob(Player player, String jobKey) {
+        UUID uuid = player.getUniqueId();
+
+        JobData oldJob = getPlayerJob(uuid);
+        playerJobs.put(uuid, jobKey);
+        JobData newJob = JobsManager.getInstance().getJob(jobKey);
+
+        Bukkit.getPluginManager().callEvent(new JobChangeEvent(player, oldJob, newJob));
+    }
+
+    public void removePlayerJob(Player player) {
+        UUID uuid = player.getUniqueId();
+
+        JobData oldJob = getPlayerJob(uuid);
+        playerJobs.remove(uuid);
+
+        Bukkit.getPluginManager().callEvent(new JobChangeEvent(player, oldJob, null));
     }
 
     public JobData getPlayerJob(UUID playerId) {
-        String jobName = playerJobs.get(playerId);
-        if (jobName != null) {
-            return JOBS_MANAGER.getJob(jobName);
+        String jobKey = playerJobs.get(playerId);
+        if (jobKey != null) {
+            return JobsManager.getInstance().getJob(jobKey);
         }
         return null;
-    }
-
-    public void removePlayerJob(UUID playerId) {
-        playerJobs.remove(playerId);
     }
 
     public HashMap<UUID, String> getAllPlayerJobs() {

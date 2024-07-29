@@ -2,6 +2,10 @@
 default_job: "citizen" # The default job assigned when a player joins the server.
 salary_frequency: 20 # How often in minutes are job salaries paid.
 
+# Economy settings
+economy:
+  initial_balance: 250 # The balance when a player first joins the server
+
 # Enable or Disable MySQL support and your database settings
 MySQL:
   enabled: true

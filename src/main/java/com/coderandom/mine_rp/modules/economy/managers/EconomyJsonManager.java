@@ -1,8 +1,8 @@
 package com.coderandom.mine_rp.modules.economy.managers;
 
+import com.coderandom.mine_rp.managers.JsonFileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.coderandom.mine_rp.managers.JsonFileManager;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -12,11 +12,12 @@ import java.util.logging.Level;
 import static com.coderandom.mine_rp.MineRP.MINE_RP;
 
 public class EconomyJsonManager implements EconomyManager {
+    private static EconomyManager instance;
     private final JsonFileManager jsonFileManager;
     private final HashMap<UUID, Double> balanceCache;
 
-    public EconomyJsonManager(String path, String fileName) {
-        this.jsonFileManager = new JsonFileManager(path, fileName);
+    EconomyJsonManager() {
+        this.jsonFileManager = new JsonFileManager("DATA", "wallets");
         this.balanceCache = new HashMap<>();
     }
 
@@ -31,7 +32,6 @@ public class EconomyJsonManager implements EconomyManager {
     @Override
     public void setBalance(UUID uuid, double balance) {
         balanceCache.put(uuid, balance);
-        saveBalance(uuid);
     }
 
     @Override

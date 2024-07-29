@@ -1,9 +1,9 @@
 package com.coderandom.mine_rp.modules.economy.managers;
 
 import com.coderandom.mine_rp.managers.MySQLManager;
-import org.bukkit.plugin.Plugin;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -39,7 +39,6 @@ public class EconomyMySQLManager implements EconomyManager {
     @Override
     public void setBalance(UUID uuid, double balance) {
         balanceCache.put(uuid, balance);
-        saveBalance(uuid);
     }
 
     @Override

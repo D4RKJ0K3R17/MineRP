@@ -3,27 +3,45 @@ package com.coderandom.mine_rp.modules.jobs.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import java.util.logging.Logger;
 
+import static com.coderandom.mine_rp.MineRP.MINE_RP;
+
 public class JobData {
+    private static final Logger LOGGER = MINE_RP.getLogger();
     private String name;
     private String category;
     private double salary;
     private String[] permissions;
-    private String[] commands;
-
-    private static final Logger LOGGER = Logger.getLogger(JobData.class.getName());
+    private String key;
+    private String permission;
 
     // Constructor
-    public JobData(String name, String category, double salary, String[] permissions, String[] commands) {
+    public JobData(String key, String name, String category, double salary, String[] permissions) {
+        this.key = key.toLowerCase();
         this.name = name;
-        this.category = category;
+        this.category = category.toLowerCase();
         this.salary = salary;
         this.permissions = permissions;
-        this.commands = commands;
+        this.permission = "mine_rp.job." + this.key;
+    }
+
+    // Parsing methods
+    public static JobData fromJsonObject(String key, JsonObject jobObject) {
+        String name = getString(jobObject, "name");
+        String category = getString(jobObject, "category").toLowerCase();
+        double salary = getDouble(jobObject, "salary");
+        String[] permissions = getStringArray(jobObject, "permissions");
+
+        return new JobData(key, name, category, salary, permissions);
     }
 
     // Getters and setters
+    public String getKey() {
+        return key;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,8 +54,8 @@ public class JobData {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setKey(String key) {
+        this.key = key.toLowerCase();
     }
 
     public double getSalary() {
@@ -56,23 +74,12 @@ public class JobData {
         this.permissions = permissions;
     }
 
-    public String[] getCommands() {
-        return commands;
+    public void setCategory(String category) {
+        this.category = category.toLowerCase();
     }
 
-    public void setCommands(String[] commands) {
-        this.commands = commands;
-    }
-
-    // Parsing methods
-    public static JobData fromJsonObject(JsonObject jobObject) {
-        String name = getString(jobObject, "name");
-        String category = getString(jobObject, "category");
-        double salary = getDouble(jobObject, "salary");
-        String[] permissions = getStringArray(jobObject, "permissions");
-        String[] commands = getStringArray(jobObject, "commands");
-
-        return new JobData(name, category, salary, permissions, commands);
+    public String getPermission() {
+        return permission;
     }
 
     private static String getString(JsonObject jsonObject, String key) {
@@ -109,6 +116,7 @@ public class JobData {
 
     public JsonObject toJsonObject() {
         JsonObject jobObject = new JsonObject();
+        jobObject.addProperty("key", this.key);
         jobObject.addProperty("name", this.name);
         jobObject.addProperty("category", this.category);
         jobObject.addProperty("salary", this.salary);
@@ -118,12 +126,6 @@ public class JobData {
             permissionsArray.add(permission);
         }
         jobObject.add("permissions", permissionsArray);
-
-        JsonArray commandsArray = new JsonArray();
-        for (String command : this.commands) {
-            commandsArray.add(command);
-        }
-        jobObject.add("commands", commandsArray);
 
         return jobObject;
     }

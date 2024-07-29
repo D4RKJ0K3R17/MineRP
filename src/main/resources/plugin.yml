@@ -5,5 +5,16 @@ api-version: '1.21'
 prefix: MineRP
 load: STARTUP
 authors: [ D4RKJOK3R ]
-description: A roleplay system for minecraft servers
+description: A role play system for minecraft servers
 depend: [Vault]
+permissions:
+  mine_rp.economy.balance:
+    default: true
+  mine_rp.economy.balance.others:
+    default: op
+  mine_rp.economy.pay:
+    default: true
+  mine_rp.economy.admin:
+    default: op
+  mine_rp.job.apply:
+    default: true

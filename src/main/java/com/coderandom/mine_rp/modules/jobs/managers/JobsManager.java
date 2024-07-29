@@ -1,22 +1,52 @@
 package com.coderandom.mine_rp.modules.jobs.managers;
 
-import com.coderandom.mine_rp.modules.jobs.data.JobData;
 import com.coderandom.mine_rp.managers.JsonFileManager;
-import com.google.gson.JsonElement;
+import com.coderandom.mine_rp.modules.jobs.data.JobData;
+import com.coderandom.mine_rp.modules.jobs.listeners.OnPlayerJoinAssignJob;
+import com.coderandom.mine_rp.modules.jobs.listeners.OnPlayerQuitRemoveJob;
 import com.google.gson.JsonObject;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
+import static com.coderandom.mine_rp.MineRP.CONFIG;
+import static com.coderandom.mine_rp.MineRP.MINE_RP;
+
 public class JobsManager {
+    private static final Logger LOGGER = MINE_RP.getLogger();
     private final JsonFileManager fileManager;
     private final HashMap<String, JobData> jobs;
-    private static final Logger LOGGER = Logger.getLogger(JobsManager.class.getName());
+    private static volatile JobsManager instance;
+    private final String defaultJob;
 
-    public JobsManager() {
+    private JobsManager() {
         this.fileManager = new JsonFileManager(null, "jobs");
         this.jobs = new HashMap<>();
+        this.defaultJob = CONFIG.getString("default_job", "citizen");
         loadJobs();
+
+        MINE_RP.getServer().getPluginManager().registerEvents(new OnPlayerJoinAssignJob(), MINE_RP);
+        MINE_RP.getServer().getPluginManager().registerEvents(new OnPlayerQuitRemoveJob(), MINE_RP);
+    }
+
+    public static void initialize() {
+        if (instance == null) {
+            synchronized (JobsManager.class) {
+                if (instance == null) {
+                    instance = new JobsManager();
+                }
+            }
+        }
+    }
+
+    public static JobsManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("JobsManager has not been initialized. Call initialize() first.");
+        }
+        return instance;
     }
 
     private void loadJobs() {
@@ -25,7 +55,7 @@ public class JobsManager {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 for (String key : jsonObject.keySet()) {
                     JsonObject jobObject = jsonObject.getAsJsonObject(key);
-                    JobData job = JobData.fromJsonObject(jobObject);
+                    JobData job = JobData.fromJsonObject(key, jobObject);
                     jobs.put(key, job);
                     LOGGER.info("Loaded job: " + key);
                 }
@@ -39,12 +69,12 @@ public class JobsManager {
         });
     }
 
-    public JobData getJob(String name) {
-        return jobs.get(name);
+    public JobData getJob(String key) {
+        return jobs.get(key.toLowerCase());
     }
 
-    public void addJob(String name, JobData job) {
-        jobs.put(name, job);
+    public void addJob(JobData job) {
+        jobs.put(job.getKey(), job);
         saveJobs();
     }
 
@@ -61,8 +91,21 @@ public class JobsManager {
         });
     }
 
-    public void deleteJob(String name) {
-        jobs.remove(name);
+    public void deleteJob(String key) {
+        jobs.remove(key);
         saveJobs();
+    }
+
+    public List<String> getJobKeys() {
+        return new ArrayList<>(jobs.keySet());
+    }
+
+    public String getDefaultJob() {
+        return defaultJob;
+    }
+
+    public boolean hasPermission(Player player, String jobKey) {
+        JobData job = jobs.get(jobKey);
+        return job != null && player.hasPermission(job.getPermission());
     }
 }

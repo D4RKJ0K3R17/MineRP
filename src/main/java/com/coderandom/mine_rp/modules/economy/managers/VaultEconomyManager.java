@@ -1,5 +1,7 @@
 package com.coderandom.mine_rp.modules.economy.managers;
 
+import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerJoinLoadBalance;
+import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerQuitUnloadBalance;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -9,13 +11,16 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.UUID;
 
-import static com.coderandom.mine_rp.MineRP.ECONOMY_MANAGER;
+import static com.coderandom.mine_rp.modules.economy.managers.EconomyManagerFactory.getInstance;
 
 public class VaultEconomyManager extends AbstractEconomy {
     private final Plugin plugin;
 
     public VaultEconomyManager(Plugin plugin) {
         this.plugin = plugin;
+
+        plugin.getServer().getPluginManager().registerEvents(new OnPlayerJoinLoadBalance(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new OnPlayerQuitUnloadBalance(), plugin);
     }
 
     @Override
@@ -25,7 +30,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public String getName() {
-        return "MineRPEconomy";
+        return "MineRP-Economy";
     }
 
     @Override
@@ -56,7 +61,7 @@ public class VaultEconomyManager extends AbstractEconomy {
     @Override
     public boolean hasAccount(String playerName) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
-        return player != null && ECONOMY_MANAGER.hasAccount(player.getUniqueId());
+        return player != null && getInstance().hasAccount(player.getUniqueId());
     }
 
     @Override
@@ -67,7 +72,7 @@ public class VaultEconomyManager extends AbstractEconomy {
     @Override
     public double getBalance(String playerName) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
-        return player != null ? ECONOMY_MANAGER.getBalance(player.getUniqueId()) : 0.0;
+        return player != null ? getInstance().getBalance(player.getUniqueId()) : 0.0;
     }
 
     @Override
@@ -92,12 +97,12 @@ public class VaultEconomyManager extends AbstractEconomy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Player not found");
         }
         UUID playerUUID = player.getUniqueId();
-        double balance = ECONOMY_MANAGER.getBalance(playerUUID);
+        double balance = getInstance().getBalance(playerUUID);
         if (balance < amount) {
             return new EconomyResponse(0, balance, EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
         }
-        ECONOMY_MANAGER.updateBalance(playerUUID, -amount);
-        return new EconomyResponse(amount, ECONOMY_MANAGER.getBalance(playerUUID), EconomyResponse.ResponseType.SUCCESS, null);
+        getInstance().updateBalance(playerUUID, -amount);
+        return new EconomyResponse(amount, getInstance().getBalance(playerUUID), EconomyResponse.ResponseType.SUCCESS, null);
     }
 
     @Override
@@ -112,8 +117,8 @@ public class VaultEconomyManager extends AbstractEconomy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Player not found");
         }
         UUID playerUUID = player.getUniqueId();
-        ECONOMY_MANAGER.updateBalance(playerUUID, amount);
-        return new EconomyResponse(amount, ECONOMY_MANAGER.getBalance(playerUUID), EconomyResponse.ResponseType.SUCCESS, null);
+        getInstance().updateBalance(playerUUID, amount);
+        return new EconomyResponse(amount, getInstance().getBalance(playerUUID), EconomyResponse.ResponseType.SUCCESS, null);
     }
 
     @Override
@@ -171,8 +176,8 @@ public class VaultEconomyManager extends AbstractEconomy {
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         if (player != null) {
             UUID playerUUID = player.getUniqueId();
-            if (!ECONOMY_MANAGER.hasAccount(playerUUID)) {
-                ECONOMY_MANAGER.setBalance(playerUUID, 0.0);
+            if (!getInstance().hasAccount(playerUUID)) {
+                getInstance().setBalance(playerUUID, 0.0);
                 return true;
             }
         }
