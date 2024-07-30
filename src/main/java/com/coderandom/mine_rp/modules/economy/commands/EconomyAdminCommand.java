@@ -52,7 +52,7 @@ public class EconomyAdminCommand extends BaseCommand {
             return;
         }
 
-        Optional<OfflinePlayer> optionalPlayer = Optional.ofNullable(Bukkit.getOfflinePlayer(targetPlayerName));
+        @SuppressWarnings("deprecation") Optional<OfflinePlayer> optionalPlayer = Optional.ofNullable(Bukkit.getOfflinePlayer(targetPlayerName));
         if (optionalPlayer.isEmpty() || !ECONOMY.hasAccount(optionalPlayer.get())) {
             sender.sendMessage("Player " + targetPlayerName + " not found or does not have an economy account.");
             return;
@@ -95,12 +95,13 @@ public class EconomyAdminCommand extends BaseCommand {
 
     private void showHelp(CommandSender sender) {
         sender.sendMessage(
-                "§6=====[ §eEconomy Commands §6]=====\n" +
-                        "§e/economy set <player_name> <amount> §7- Set a player's balance to a specific amount.\n" +
-                        "§e/economy deposit <player_name> <amount> §7- Deposit a specific amount to a player's balance.\n" +
-                        "§e/economy withdraw <player_name> <amount> §7- Withdraw a specific amount from a player's balance.\n" +
-                        "§e/economy help §7- Show this help message.\n" +
-                        "§6==============================="
+                """
+                        §6=====[ §eEconomy Commands §6]=====
+                        §e/economy set <player_name> <amount> §7- Set a player's balance to a specific amount.
+                        §e/economy deposit <player_name> <amount> §7- Deposit a specific amount to a player's balance.
+                        §e/economy withdraw <player_name> <amount> §7- Withdraw a specific amount from a player's balance.
+                        §e/economy help §7- Show this help message.
+                        §6==============================="""
         );
     }
 

@@ -86,11 +86,11 @@ public class MySQLManager {
         return ps.executeQuery();
     }
 
-    public int executeUpdate(String query, Object... parameters) throws SQLException {
+    public void executeUpdate(String query, Object... parameters) throws SQLException {
         validateConnection();
         PreparedStatement ps = connection.prepareStatement(query);
         setParameters(ps, parameters);
-        return ps.executeUpdate();
+        ps.executeUpdate();
     }
 
     private void validateConnection() throws SQLException {

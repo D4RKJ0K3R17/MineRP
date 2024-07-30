@@ -14,7 +14,7 @@ public class JobData {
     private double salary;
     private String[] permissions;
     private String key;
-    private String permission;
+    private final String permission;
 
     // Constructor
     public JobData(String key, String name, String category, double salary, String[] permissions) {

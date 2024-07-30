@@ -62,7 +62,6 @@ public class JobsManager {
             }
         }).exceptionally(throwable -> {
             LOGGER.severe("Exception occurred while loading jobs: " + throwable.getMessage());
-            throwable.printStackTrace();
             return null;
         });
     }
@@ -84,7 +83,6 @@ public class JobsManager {
         }
         fileManager.setAsync(jsonObject).exceptionally(throwable -> {
             LOGGER.severe("Exception occurred while saving jobs: " + throwable.getMessage());
-            throwable.printStackTrace();
             return null;
         });
     }

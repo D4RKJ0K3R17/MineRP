@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 public class JobCommand extends BaseCommand {
     /**
      * Constructs a new command with the specified parameters.
-     *
-     * @param jobsData instance of the PlayerJobsData
      */
     public JobCommand() {
         super(

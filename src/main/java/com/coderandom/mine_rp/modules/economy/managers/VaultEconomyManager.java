@@ -60,7 +60,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public boolean hasAccount(String playerName) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        @SuppressWarnings("deprecation") OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         return player != null && getInstance().hasAccount(player.getUniqueId());
     }
 
@@ -71,7 +71,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public double getBalance(String playerName) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        @SuppressWarnings("deprecation") OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         return player != null ? getInstance().getBalance(player.getUniqueId()) : 0.0;
     }
 
@@ -92,7 +92,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        @SuppressWarnings("deprecation") OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         if (player == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Player not found");
         }
@@ -112,7 +112,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        @SuppressWarnings("deprecation") OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         if (player == null) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Player not found");
         }
@@ -173,7 +173,7 @@ public class VaultEconomyManager extends AbstractEconomy {
 
     @Override
     public boolean createPlayerAccount(String playerName) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        @SuppressWarnings("deprecation") OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
         if (player != null) {
             UUID playerUUID = player.getUniqueId();
             if (!getInstance().hasAccount(playerUUID)) {

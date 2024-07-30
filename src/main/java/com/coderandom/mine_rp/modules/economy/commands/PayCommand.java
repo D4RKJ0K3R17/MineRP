@@ -63,7 +63,7 @@ public class PayCommand extends BaseCommand {
             }
         }
 
-        OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
+        @SuppressWarnings("deprecation") OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetPlayerName);
 
         if (!ECONOMY.hasAccount(targetPlayer)) {
             sender.sendMessage("The specified player does not have an economy account.");

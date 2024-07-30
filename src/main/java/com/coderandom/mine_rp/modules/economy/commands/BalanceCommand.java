@@ -28,14 +28,14 @@ public class BalanceCommand extends BaseCommand {
 
     @Override
     public void executeCommand(final CommandSender sender, final String[] args) {
-        if (sender instanceof Player && args.length == 0) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player && args.length == 0) {
             CompletableFuture.runAsync(() -> {
                 double balance = ECONOMY.getBalance(player);
                 player.sendMessage(ChatColor.GREEN + "Balance: " + ECONOMY.format(balance));
             });
         } else if (args.length == 1 && sender.hasPermission(this.getPermission() + ".others")) {
             CompletableFuture.runAsync(() -> {
+                //noinspection deprecation
                 OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                 if (target != null && ECONOMY.hasAccount(target)) {
                     double balance = ECONOMY.getBalance(target);

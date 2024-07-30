@@ -79,7 +79,6 @@ public abstract class BaseCommand extends BukkitCommand {
      *
      * @param sender the source of the command
      * @param args   the arguments passed to the command
-     * @return true if the command was handled successfully, otherwise false
      */
     public abstract void executeCommand(CommandSender sender, String[] args);
 
