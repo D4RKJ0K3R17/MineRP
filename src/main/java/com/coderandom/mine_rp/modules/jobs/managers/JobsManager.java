@@ -1,5 +1,6 @@
 package com.coderandom.mine_rp.modules.jobs.managers;
 
+import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.managers.JsonFileManager;
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
 import com.coderandom.mine_rp.modules.jobs.listeners.OnPlayerJoinAssignJob;
@@ -12,24 +13,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.coderandom.mine_rp.MineRP.CONFIG;
-import static com.coderandom.mine_rp.MineRP.MINE_RP;
-
 public class JobsManager {
-    private static final Logger LOGGER = MINE_RP.getLogger();
+    private static final Logger LOGGER = MineRP.getInstance().getLogger();
+    private static volatile JobsManager instance;
     private final JsonFileManager fileManager;
     private final HashMap<String, JobData> jobs;
-    private static volatile JobsManager instance;
     private final String defaultJob;
 
     private JobsManager() {
         this.fileManager = new JsonFileManager(null, "jobs");
         this.jobs = new HashMap<>();
-        this.defaultJob = CONFIG.getString("default_job", "citizen");
+        this.defaultJob = MineRP.getInstance().getConfiguration().getString("default_job", "citizen");
         loadJobs();
 
-        MINE_RP.getServer().getPluginManager().registerEvents(new OnPlayerJoinAssignJob(), MINE_RP);
-        MINE_RP.getServer().getPluginManager().registerEvents(new OnPlayerQuitRemoveJob(), MINE_RP);
+        MineRP.getInstance().getServer().getPluginManager().registerEvents(new OnPlayerJoinAssignJob(), MineRP.getInstance());
+        MineRP.getInstance().getServer().getPluginManager().registerEvents(new OnPlayerQuitRemoveJob(), MineRP.getInstance());
     }
 
     public static void initialize() {

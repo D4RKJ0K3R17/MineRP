@@ -27,19 +27,19 @@ import java.util.logging.Level;
  */
 public final class MineRP extends JavaPlugin {
 
-    // Static references for global access
-    public static MineRP MINE_RP;
-    public static FileConfiguration CONFIG;
-    public static PlayerJobsData PLAYER_JOBS_DATA;
-    public static SalaryManager SALARY_MANAGER;
-    public static Economy ECONOMY;
+    private static volatile MineRP instance;
+    private FileConfiguration config;
+    private Economy economy;
+
+    public static MineRP getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        MINE_RP = this;
+        instance = this;
         saveDefaultConfig();
-        CONFIG = getConfig();
+        config = getConfig();
 
         // Initialize Managers
         initializeManagers();
@@ -51,10 +51,6 @@ public final class MineRP extends JavaPlugin {
             return;
         }
 
-        // Initialize Jobs and Salary managers
-        PLAYER_JOBS_DATA = new PlayerJobsData();
-        SALARY_MANAGER = new SalaryManager(this, PLAYER_JOBS_DATA);
-
         // Register event listeners
         registerEvents();
 
@@ -64,18 +60,8 @@ public final class MineRP extends JavaPlugin {
         loadPlayerData();
     }
 
-    private void initializeManagers() {
-        if (CONFIG.getBoolean("MySQL.enabled")) {
-            MySQLManager.initialize(this);
-        }
-
-        EconomyManagerFactory.initialize(this);
-        JobsManager.initialize();
-    }
-
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         if (MySQLManager.getInstance() != null) {
             MySQLManager.getInstance().disconnect();
         }
@@ -83,44 +69,45 @@ public final class MineRP extends JavaPlugin {
         unloadPlayerData();
     }
 
+    private void initializeManagers() {
+        if (config.getBoolean("MySQL.enabled")) {
+            MySQLManager.initialize(this);
+        }
+
+        EconomyManagerFactory.initialize(this);
+        JobsManager.initialize();
+        PlayerJobsData.initialize();
+        SalaryManager.initialize(this);
+    }
+
     private void loadPlayerData() {
         String defaultJob = JobsManager.getInstance().getDefaultJob();
 
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-            PLAYER_JOBS_DATA.setPlayerJob(player, defaultJob);
+            PlayerJobsData.getInstance().setPlayerJob(player, defaultJob);
             getLogger().log(Level.INFO, "Assigned default job '" + defaultJob + "' to player " + player.getName());
             EconomyManagerFactory.getInstance().loadBalance(player.getUniqueId());
         });
     }
 
-    private void unloadPlayerData() {
-        Bukkit.getServer().getOnlinePlayers().forEach(PLAYER_JOBS_DATA::removePlayerJob);
-        MINE_RP.getLogger().log(Level.INFO, "Saving all balances before shutdown.");
-        EconomyManagerFactory.getInstance().saveAllBalances();
-    }
-
-    /**
-     * Registers the event listeners for the plugin.
-     */
     private void registerEvents() {
-        // Register event listeners
         getServer().getPluginManager().registerEvents(new OnPlayerJoinLoadBalance(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerQuitUnloadBalance(), this);
     }
 
-    /**
-     * Registers the commands for the plugin.
-     */
+    private void unloadPlayerData() {
+        Bukkit.getServer().getOnlinePlayers().forEach(PlayerJobsData.getInstance()::removePlayerJob);
+        getLogger().log(Level.INFO, "Saving all balances before shutdown.");
+        EconomyManagerFactory.getInstance().saveAllBalances();
+    }
+
     private void registerCommands() {
         new BalanceCommand();
         new PayCommand();
         new EconomyAdminCommand();
-        new JobCommand(PLAYER_JOBS_DATA);
+        new JobCommand();
     }
 
-    /**
-     * Setup Vault Economy.
-     */
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().log(Level.SEVERE, "Vault plugin not found!");
@@ -129,11 +116,19 @@ public final class MineRP extends JavaPlugin {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             getLogger().log(Level.SEVERE, "No Economy provider found! Registering VaultEconomyManager.");
-            ECONOMY = new VaultEconomyManager(this);
-            getServer().getServicesManager().register(Economy.class, ECONOMY, this, ServicePriority.Highest);
+            economy = new VaultEconomyManager(this);
+            getServer().getServicesManager().register(Economy.class, economy, this, ServicePriority.Highest);
         } else {
-            ECONOMY = rsp.getProvider();
+            economy = rsp.getProvider();
         }
-        return ECONOMY != null;
+        return economy != null;
+    }
+
+    public FileConfiguration getConfiguration() {
+        return config;
+    }
+
+    public Economy getEconomy() {
+        return economy;
     }
 }

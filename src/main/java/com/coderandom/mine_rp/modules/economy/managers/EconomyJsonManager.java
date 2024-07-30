@@ -1,5 +1,6 @@
 package com.coderandom.mine_rp.modules.economy.managers;
 
+import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.managers.JsonFileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,11 +9,10 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-
-import static com.coderandom.mine_rp.MineRP.MINE_RP;
+import java.util.logging.Logger;
 
 public class EconomyJsonManager implements EconomyManager {
-    private static EconomyManager instance;
+    private static final Logger LOGGER = MineRP.getInstance().getLogger();
     private final JsonFileManager jsonFileManager;
     private final HashMap<UUID, Double> balanceCache;
 
@@ -54,7 +54,7 @@ public class EconomyJsonManager implements EconomyManager {
                 }
             }
         } catch (Exception e) {
-            MINE_RP.getLogger().log(Level.SEVERE, "Could not load balance for player: " + uuid, e);
+            LOGGER.log(Level.SEVERE, "Could not load balance for player: " + uuid, e);
         }
         balanceCache.put(uuid, 0.0); // Default balance if not found
         return 0.0;
@@ -73,7 +73,7 @@ public class EconomyJsonManager implements EconomyManager {
 
             jsonObject.addProperty(uuid.toString(), balance);
             jsonFileManager.setAsync(jsonObject).exceptionally(throwable -> {
-                MINE_RP.getLogger().log(Level.SEVERE, "Could not save balance for player: " + uuid, throwable);
+                LOGGER.log(Level.SEVERE, "Could not save balance for player: " + uuid, throwable);
                 return null;
             });
             balanceCache.remove(uuid);
@@ -95,7 +95,7 @@ public class EconomyJsonManager implements EconomyManager {
             }
 
             jsonFileManager.setAsync(jsonObject).exceptionally(throwable -> {
-                MINE_RP.getLogger().log(Level.SEVERE, "Could not save all balances!", throwable);
+                LOGGER.log(Level.SEVERE, "Could not save all balances!", throwable);
                 return null;
             });
 
@@ -113,7 +113,7 @@ public class EconomyJsonManager implements EconomyManager {
                 return jsonObject.has(uuid.toString());
             }
         } catch (Exception e) {
-            MINE_RP.getLogger().log(Level.SEVERE, "Could not check if account exists for player: " + uuid, e);
+            LOGGER.log(Level.SEVERE, "Could not check if account exists for player: " + uuid, e);
         }
         return false;
     }

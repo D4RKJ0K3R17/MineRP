@@ -1,15 +1,14 @@
 package com.coderandom.mine_rp.modules.jobs.data;
 
+import com.coderandom.mine_rp.MineRP;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.logging.Logger;
 
-import static com.coderandom.mine_rp.MineRP.MINE_RP;
-
 public class JobData {
-    private static final Logger LOGGER = MINE_RP.getLogger();
+    private static final Logger LOGGER = MineRP.getInstance().getLogger();
     private String name;
     private String category;
     private double salary;

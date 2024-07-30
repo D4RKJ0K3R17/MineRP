@@ -1,32 +1,42 @@
 package com.coderandom.mine_rp.modules.jobs.managers;
 
+import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
 import com.coderandom.mine_rp.modules.jobs.data.PlayerJobsData;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.logging.Level;
 
-import static com.coderandom.mine_rp.MineRP.*;
-
 public class SalaryManager {
-    private final PlayerJobsData playerJobData;
-    private final JavaPlugin plugin;
+    private static final Economy ECONOMY = MineRP.getInstance().getEconomy();
+    private static volatile SalaryManager instance;
     private final long salary_frequency;
+    private final Plugin plugin;
 
-    public SalaryManager(JavaPlugin plugin, PlayerJobsData playerJobData) {
+    private SalaryManager(Plugin plugin) {
         this.plugin = plugin;
-        this.playerJobData = playerJobData;
-        this.salary_frequency = (long) CONFIG.getInt("salary_frequency", 20) * 60 * 20;
+        this.salary_frequency = (long) MineRP.getInstance().getConfiguration().getInt("salary_frequency", 20) * 60 * 20;
 
         startSalaryPayments();
     }
 
-    public void startSalaryPayments() {
-        MINE_RP.getLogger().log(Level.INFO, "Starting salary payments every " + salary_frequency / 60 / 20 + " minutes (" + salary_frequency + " ticks).");
+    public static void initialize(Plugin plugin) {
+        if (instance == null) {
+            synchronized (SalaryManager.class) {
+                if (instance == null) {
+                    instance = new SalaryManager(plugin);
+                }
+            }
+        }
+    }
+
+    private void startSalaryPayments() {
+        MineRP.getInstance().getLogger().log(Level.INFO, "Starting salary payments every " + salary_frequency / 60 / 20 + " minutes (" + salary_frequency + " ticks).");
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -37,10 +47,10 @@ public class SalaryManager {
 
     private void paySalaries() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            for (UUID playerId : playerJobData.getAllPlayerJobs().keySet()) {
+            for (UUID playerId : PlayerJobsData.getInstance().getAllPlayerJobs().keySet()) {
                 Player player = Bukkit.getPlayer(playerId);
                 if (player != null && player.isOnline()) {
-                    JobData jobData = playerJobData.getPlayerJob(playerId);
+                    JobData jobData = PlayerJobsData.getInstance().getPlayerJob(playerId);
                     if (jobData != null) {
                         double salary = jobData.getSalary();
                         Bukkit.getScheduler().runTask(plugin, () -> {

@@ -1,5 +1,6 @@
 package com.coderandom.mine_rp.modules.permissions;
 
+import com.coderandom.mine_rp.MineRP;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -7,8 +8,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.coderandom.mine_rp.MineRP.MINE_RP;
 
 public class PermissionManager {
     private static final Map<UUID, PermissionAttachment> playerPermissions = new ConcurrentHashMap<>();
@@ -30,7 +29,7 @@ public class PermissionManager {
     }
 
     private PermissionAttachment getAttachment(Player player) {
-        return playerPermissions.computeIfAbsent(player.getUniqueId(), k -> player.addAttachment(MINE_RP));
+        return playerPermissions.computeIfAbsent(player.getUniqueId(), k -> player.addAttachment(MineRP.getInstance()));
     }
 
     public void removePlayerPermissions(Player player) {

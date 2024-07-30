@@ -12,14 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JobCommand extends BaseCommand {
-    private final PlayerJobsData jobsData;
-
     /**
      * Constructs a new command with the specified parameters.
      *
      * @param jobsData instance of the PlayerJobsData
      */
-    public JobCommand(PlayerJobsData jobsData) {
+    public JobCommand() {
         super(
                 "job",
                 new String[]{},
@@ -27,8 +25,6 @@ public class JobCommand extends BaseCommand {
                 "/job <job_name>",
                 "Allows a player to switch jobs"
         );
-
-        this.jobsData = jobsData;
     }
 
     @Override
@@ -44,7 +40,7 @@ public class JobCommand extends BaseCommand {
 
             if (job != null) {
                 if (player.hasPermission("mine_rp.job." + jobKey)) {
-                    jobsData.setPlayerJob(player, jobKey);
+                    PlayerJobsData.getInstance().setPlayerJob(player, jobKey);
                     player.sendMessage(ChatColor.GREEN + "You have successfully switched to the job: " + ChatColor.YELLOW + job.getName());
                 } else {
                     player.sendMessage(ChatColor.RED + "You don't have permission to switch to this job.");

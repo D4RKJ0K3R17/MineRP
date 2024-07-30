@@ -1,6 +1,8 @@
 package com.coderandom.mine_rp.modules.economy.commands;
 
+import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.util.BaseCommand;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,9 +12,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.coderandom.mine_rp.MineRP.ECONOMY;
-
 public class PayCommand extends BaseCommand {
+    private static final Economy ECONOMY = MineRP.getInstance().getEconomy();
     public PayCommand() {
         super(
                 "pay",

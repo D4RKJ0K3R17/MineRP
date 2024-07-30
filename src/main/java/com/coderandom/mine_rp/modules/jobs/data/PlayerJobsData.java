@@ -9,10 +9,28 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerJobsData {
+    private static volatile PlayerJobsData instance;
     private final HashMap<UUID, String> playerJobs;
 
-    public PlayerJobsData() {
+    private PlayerJobsData() {
         this.playerJobs = new HashMap<>();
+    }
+
+    public static void initialize() {
+        if (instance == null) {
+            synchronized (PlayerJobsData.class) {
+                if (instance == null) {
+                    instance = new PlayerJobsData();
+                }
+            }
+        }
+    }
+
+    public static PlayerJobsData getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("PlayerJobsData has not been initialized. Call initialize() first.");
+        }
+        return instance;
     }
 
     public void setPlayerJob(Player player, String jobKey) {

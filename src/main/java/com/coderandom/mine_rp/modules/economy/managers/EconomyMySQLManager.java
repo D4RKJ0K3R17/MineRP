@@ -1,5 +1,6 @@
 package com.coderandom.mine_rp.modules.economy.managers;
 
+import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.managers.MySQLManager;
 
 import java.sql.ResultSet;
@@ -7,10 +8,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
-
-import static com.coderandom.mine_rp.MineRP.MINE_RP;
+import java.util.logging.Logger;
 
 public class EconomyMySQLManager implements EconomyManager {
+    private static final Logger LOGGER = MineRP.getInstance().getLogger();
     private final MySQLManager mySQLManager;
     private final HashMap<UUID, Double> balanceCache;
 
@@ -60,7 +61,7 @@ public class EconomyMySQLManager implements EconomyManager {
                 return 0.0;
             }
         } catch (SQLException e) {
-            MINE_RP.getLogger().log(Level.SEVERE, "Could not load balance for player: " + uuid, e);
+            LOGGER.log(Level.SEVERE, "Could not load balance for player: " + uuid, e);
             return 0.0;
         }
     }
@@ -73,7 +74,7 @@ public class EconomyMySQLManager implements EconomyManager {
             mySQLManager.executeUpdate(query, uuid.toString(), balance);
             balanceCache.remove(uuid);
         } catch (SQLException e) {
-            MINE_RP.getLogger().log(Level.SEVERE, "Could not save balance for player: " + uuid, e);
+            LOGGER.log(Level.SEVERE, "Could not save balance for player: " + uuid, e);
         }
     }
 
@@ -90,7 +91,7 @@ public class EconomyMySQLManager implements EconomyManager {
         try (ResultSet rs = mySQLManager.executeQuery(query, uuid.toString())) {
             return rs.next();
         } catch (SQLException e) {
-            MINE_RP.getLogger().log(Level.SEVERE, "Could not check if account exists for player: " + uuid, e);
+            LOGGER.log(Level.SEVERE, "Could not check if account exists for player: " + uuid, e);
             return false;
         }
     }
