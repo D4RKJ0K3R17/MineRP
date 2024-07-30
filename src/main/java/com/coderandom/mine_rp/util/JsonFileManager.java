@@ -1,18 +1,17 @@
-package com.coderandom.mine_rp.managers;
+package com.coderandom.mine_rp.util;
 
 import com.coderandom.mine_rp.MineRP;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 public class JsonFileManager {
+    private static final Logger LOGGER = MineRP.getInstance().getLogger();
     private final File file;
     private final Gson gson;
 
@@ -24,7 +23,7 @@ public class JsonFileManager {
             directory = new File(MineRP.getInstance().getDataFolder(), path);
         }
         this.file = new File(directory, fileName + ".json");
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
 
         // Check if the file exists in the plugin data folder; if not, try to create it from JAR resources
         if (!file.exists()) {
@@ -88,6 +87,18 @@ public class JsonFileManager {
                 MineRP.getInstance().getLogger().severe("Error writing JSON to file: " + e.getMessage());
             }
         });
+    }
+
+    public JsonElement getSync() {
+        try (Reader reader = new FileReader(file, StandardCharsets.UTF_8)) {
+            return JsonParser.parseReader(reader);
+        } catch (FileNotFoundException e) {
+            MineRP.getInstance().getLogger().severe("File not found: " + e.getMessage());
+            return null;
+        } catch (IOException | JsonSyntaxException e) {
+            MineRP.getInstance().getLogger().severe("Error reading JSON from file: " + e.getMessage());
+            return null;
+        }
     }
 
     public void deleteFile() {

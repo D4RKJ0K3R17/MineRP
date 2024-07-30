@@ -1,4 +1,4 @@
-package com.coderandom.mine_rp.managers;
+package com.coderandom.mine_rp.util;
 
 import org.bukkit.plugin.Plugin;
 

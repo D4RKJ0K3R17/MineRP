@@ -1,4 +1,4 @@
-package com.coderandom.mine_rp.modules.economy.commands;
+package com.coderandom.mine_rp.commands.economy;
 
 import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.util.BaseCommand;

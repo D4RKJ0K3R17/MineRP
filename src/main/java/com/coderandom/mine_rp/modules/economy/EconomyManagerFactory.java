@@ -1,6 +1,6 @@
-package com.coderandom.mine_rp.modules.economy.managers;
+package com.coderandom.mine_rp.modules.economy;
 
-import com.coderandom.mine_rp.managers.MySQLManager;
+import com.coderandom.mine_rp.util.MySQLManager;
 import org.bukkit.plugin.Plugin;
 
 public class EconomyManagerFactory {

@@ -1,4 +1,4 @@
-package com.coderandom.mine_rp.modules.jobs.managers;
+package com.coderandom.mine_rp.modules.jobs;
 
 import com.coderandom.mine_rp.MineRP;
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
@@ -11,16 +11,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SalaryManager {
-    private static final Economy ECONOMY = MineRP.getInstance().getEconomy();
+    private static Economy ECONOMY;
     private static volatile SalaryManager instance;
-    private final long salary_frequency;
+    private final long salaryFrequency;
     private final Plugin plugin;
+    private final Logger logger;
 
     private SalaryManager(Plugin plugin) {
         this.plugin = plugin;
-        this.salary_frequency = (long) MineRP.getInstance().getConfiguration().getInt("salary_frequency", 20) * 60 * 20;
+        this.logger = MineRP.getInstance().getLogger();
+        this.salaryFrequency = MineRP.getInstance().getConfiguration().getInt("salary_frequency", 20) * 60L * 20L;
+        this.ECONOMY = MineRP.getInstance().getEconomy();
 
         startSalaryPayments();
     }
@@ -36,13 +40,13 @@ public class SalaryManager {
     }
 
     private void startSalaryPayments() {
-        MineRP.getInstance().getLogger().log(Level.INFO, "Starting salary payments every " + salary_frequency / 60 / 20 + " minutes (" + salary_frequency + " ticks).");
+        logger.log(Level.INFO, "Starting salary payments every {0} minutes ({1} ticks).", new Object[]{salaryFrequency / 60 / 20, salaryFrequency});
         new BukkitRunnable() {
             @Override
             public void run() {
                 paySalaries();
             }
-        }.runTaskTimer(plugin, salary_frequency, salary_frequency);
+        }.runTaskTimer(plugin, salaryFrequency, salaryFrequency);
     }
 
     private void paySalaries() {
@@ -55,13 +59,15 @@ public class SalaryManager {
                         double salary = jobData.getSalary();
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             ECONOMY.depositPlayer(player, salary);
-                            plugin.getLogger().log(Level.INFO, "Paid {0} a salary of {1} for the job {2}",
+                            logger.log(Level.INFO, "Paid {0} a salary of {1} for the job {2}.",
                                     new Object[]{player.getName(), salary, jobData.getName()});
                             player.sendMessage("You've been paid " + ECONOMY.format(salary) + " for being a " + jobData.getName());
                         });
                     } else {
-                        plugin.getLogger().log(Level.WARNING, "Job data not found for player {0}", player.getName());
+                        logger.log(Level.WARNING, "Job data not found for player {0}.", player.getName());
                     }
+                } else {
+                    logger.log(Level.INFO, "Player {0} is not online. Skipping salary payment.", playerId);
                 }
             }
         });

@@ -1,7 +1,5 @@
-package com.coderandom.mine_rp.modules.economy.managers;
+package com.coderandom.mine_rp.modules.economy;
 
-import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerJoinLoadBalance;
-import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerQuitUnloadBalance;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -11,16 +9,13 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.UUID;
 
-import static com.coderandom.mine_rp.modules.economy.managers.EconomyManagerFactory.getInstance;
+import static com.coderandom.mine_rp.modules.economy.EconomyManagerFactory.getInstance;
 
 public class VaultEconomyManager extends AbstractEconomy {
     private final Plugin plugin;
 
     public VaultEconomyManager(Plugin plugin) {
         this.plugin = plugin;
-
-        plugin.getServer().getPluginManager().registerEvents(new OnPlayerJoinLoadBalance(), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new OnPlayerQuitUnloadBalance(), plugin);
     }
 
     @Override

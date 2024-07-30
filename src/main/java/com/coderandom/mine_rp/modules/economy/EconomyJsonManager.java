@@ -1,7 +1,7 @@
-package com.coderandom.mine_rp.modules.economy.managers;
+package com.coderandom.mine_rp.modules.economy;
 
 import com.coderandom.mine_rp.MineRP;
-import com.coderandom.mine_rp.managers.JsonFileManager;
+import com.coderandom.mine_rp.util.JsonFileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 

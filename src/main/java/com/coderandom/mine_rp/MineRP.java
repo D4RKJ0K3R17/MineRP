@@ -1,18 +1,19 @@
 package com.coderandom.mine_rp;
 
-import com.coderandom.mine_rp.managers.MySQLManager;
-import com.coderandom.mine_rp.modules.economy.commands.BalanceCommand;
-import com.coderandom.mine_rp.modules.economy.commands.EconomyAdminCommand;
-import com.coderandom.mine_rp.modules.economy.commands.PayCommand;
-import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerJoinLoadBalance;
-import com.coderandom.mine_rp.modules.economy.listeners.OnPlayerQuitUnloadBalance;
-import com.coderandom.mine_rp.modules.economy.managers.EconomyManagerFactory;
-import com.coderandom.mine_rp.modules.economy.managers.VaultEconomyManager;
-import com.coderandom.mine_rp.modules.jobs.commands.JobCommand;
+import com.coderandom.mine_rp.commands.economy.BalanceCommand;
+import com.coderandom.mine_rp.commands.economy.EconomyAdminCommand;
+import com.coderandom.mine_rp.commands.economy.PayCommand;
+import com.coderandom.mine_rp.commands.jobs.JobCommand;
+import com.coderandom.mine_rp.listeners.OnPlayerJoin;
+import com.coderandom.mine_rp.listeners.OnPlayerQuit;
+import com.coderandom.mine_rp.modules.economy.EconomyManagerFactory;
+import com.coderandom.mine_rp.modules.economy.VaultEconomyManager;
+import com.coderandom.mine_rp.modules.jobs.JobsManager;
+import com.coderandom.mine_rp.modules.jobs.SalaryManager;
 import com.coderandom.mine_rp.modules.jobs.data.PlayerJobsData;
-import com.coderandom.mine_rp.modules.jobs.managers.JobsManager;
-import com.coderandom.mine_rp.modules.jobs.managers.SalaryManager;
+import com.coderandom.mine_rp.util.MySQLManager;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -21,15 +22,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 
-/**
- * Main class for the MineRP plugin.
- * Handles initialization, configuration, and shutdown processes.
- */
 public final class MineRP extends JavaPlugin {
-
     private static volatile MineRP instance;
     private FileConfiguration config;
     private Economy economy;
+    private Permission permission;
 
     public static MineRP getInstance() {
         return instance;
@@ -41,15 +38,15 @@ public final class MineRP extends JavaPlugin {
         saveDefaultConfig();
         config = getConfig();
 
-        // Initialize Managers
-        initializeManagers();
-
         // Setup Vault Economy
         if (!setupEconomy()) {
             getLogger().log(Level.SEVERE, "Vault dependency not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        // Initialize Managers
+        initializeManagers();
 
         // Register event listeners
         registerEvents();
@@ -91,8 +88,8 @@ public final class MineRP extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new OnPlayerJoinLoadBalance(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerQuitUnloadBalance(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
     }
 
     private void unloadPlayerData() {
@@ -130,5 +127,9 @@ public final class MineRP extends JavaPlugin {
 
     public Economy getEconomy() {
         return economy;
+    }
+
+    public Permission getPermission() {
+        return permission;
     }
 }

@@ -1,5 +1,6 @@
 package com.coderandom.mine_rp.util;
 
+import com.coderandom.mine_rp.MineRP;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -48,7 +49,7 @@ public abstract class BaseCommand extends BukkitCommand {
             commandMapField.setAccessible(true);
 
             CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
-            commandMap.register(command, this);
+            commandMap.register(MineRP.getInstance().getName(), this);
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to register command '" + command + "': " + e.getMessage(), e);

@@ -1,7 +1,7 @@
 package com.coderandom.mine_rp.modules.jobs.data;
 
+import com.coderandom.mine_rp.modules.jobs.JobsManager;
 import com.coderandom.mine_rp.modules.jobs.events.JobChangeEvent;
-import com.coderandom.mine_rp.modules.jobs.managers.JobsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

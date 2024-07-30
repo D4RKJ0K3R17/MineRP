@@ -1,10 +1,8 @@
-package com.coderandom.mine_rp.modules.jobs.managers;
+package com.coderandom.mine_rp.modules.jobs;
 
 import com.coderandom.mine_rp.MineRP;
-import com.coderandom.mine_rp.managers.JsonFileManager;
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
-import com.coderandom.mine_rp.modules.jobs.listeners.OnPlayerJoinAssignJob;
-import com.coderandom.mine_rp.modules.jobs.listeners.OnPlayerQuitRemoveJob;
+import com.coderandom.mine_rp.util.JsonFileManager;
 import com.google.gson.JsonObject;
 import org.bukkit.entity.Player;
 
@@ -25,9 +23,6 @@ public class JobsManager {
         this.jobs = new HashMap<>();
         this.defaultJob = MineRP.getInstance().getConfiguration().getString("default_job", "citizen");
         loadJobs();
-
-        MineRP.getInstance().getServer().getPluginManager().registerEvents(new OnPlayerJoinAssignJob(), MineRP.getInstance());
-        MineRP.getInstance().getServer().getPluginManager().registerEvents(new OnPlayerQuitRemoveJob(), MineRP.getInstance());
     }
 
     public static void initialize() {

@@ -1,4 +1,4 @@
-package com.coderandom.mine_rp.modules.economy.managers;
+package com.coderandom.mine_rp.modules.economy;
 
 import java.util.UUID;
 

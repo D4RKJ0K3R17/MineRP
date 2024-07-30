@@ -1,7 +1,7 @@
-package com.coderandom.mine_rp.modules.economy.managers;
+package com.coderandom.mine_rp.modules.economy;
 
 import com.coderandom.mine_rp.MineRP;
-import com.coderandom.mine_rp.managers.MySQLManager;
+import com.coderandom.mine_rp.util.MySQLManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

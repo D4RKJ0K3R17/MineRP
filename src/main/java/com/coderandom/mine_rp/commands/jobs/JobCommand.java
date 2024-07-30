@@ -1,8 +1,8 @@
-package com.coderandom.mine_rp.modules.jobs.commands;
+package com.coderandom.mine_rp.commands.jobs;
 
+import com.coderandom.mine_rp.modules.jobs.JobsManager;
 import com.coderandom.mine_rp.modules.jobs.data.JobData;
 import com.coderandom.mine_rp.modules.jobs.data.PlayerJobsData;
-import com.coderandom.mine_rp.modules.jobs.managers.JobsManager;
 import com.coderandom.mine_rp.util.BaseCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
